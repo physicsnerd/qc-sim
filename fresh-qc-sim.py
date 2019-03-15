@@ -67,7 +67,7 @@ def norm(qstat):
 
 def normalize(qstat):
     norm = norm(qstat)
-    return 1/math.sqrt(norm)*qstat#scalar multiplication numpy? check if right
+    return np.dot(1/math.sqrt(norm),qstat)
 
 def projection(acceptable_stats):
     #create qnum*qnum diagonal matrix
@@ -86,9 +86,8 @@ def projection(acceptable_stats):
                 diagonal_matrix[i][k] = 0
     return diagonal_matrix
       
-#WRITE probabilities for printing and measurement (n = 1 or 0)
 #RESEARCH partial trace see Daniel Sank forum answer ask Harry?
-#FIGURE OUT what does this even need to look like? where am i calling from? &c
+#FIGURE OUT how to handle measurement probability see above
 def probability(qstat, qn = "all", pn = ''):
     if qn != "all":
         #do normal
