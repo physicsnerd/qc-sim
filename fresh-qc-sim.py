@@ -139,8 +139,11 @@ if simulation_type == 'ideal':
                 matrix_load = np.loadtxt(file_read, dtype='i', delimiter=',')#change dtype for floats?
                 gates[file_read[:file_read.index('.')]] = matrix_load
                 print(gates)
-                matrix = input("which gate from your file would you like to use: ")
-                qstat = apply(gates[matrix], qstat)
+                try:
+                    matrix = input("which gate from your file would you like to use: ")
+                    qstat = apply(gates[matrix], qstat)
+                except KeyError:
+                    print('this gate does not seem to have been saved in the past. try custom gate')
                 print(qstat)
             except FileNotFoundError:
                 print("file not found, check your spelling")
@@ -170,4 +173,4 @@ else:
 print("end state: ", qstat)
 
 for i in basis_states:
-    print('probability of '+i+'on measurement: ', probability(qstat, i))
+    print('probability of |'+i+'> on measurement: ', probability(qstat, i))
