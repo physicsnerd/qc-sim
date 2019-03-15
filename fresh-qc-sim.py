@@ -92,10 +92,10 @@ def projection(acceptable_stats):
 def probability(qstat, pn, qn = "all"):
     if qn == "all":
         #do normal
-        print('hmm')
+        return None#placeholders
     else:
         #do overall
-        print('hmm')
+        return None
 
 #figure out how probability arguments should be handled
 def measurement(qstat, qnum_meas="all"):
