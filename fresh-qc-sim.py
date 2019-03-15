@@ -24,32 +24,33 @@ while iterate <= qnum:
     iterate+=1
 
 basis_states = [] #is this generation even correct? check with mr. maine...?
-for i in range (0, 2**qnum):
+for i in range(0, 2**qnum):
     basis_states.append(bin(i)[2:].zfill(qnum))
 done = 'n'
 
-realizations = {}
+realizations = {}#not yet in use
 gates = {}
 simulation_type = input("ideal or nonideal simulation: ")
 
 #ADD way to put pi/sqrt/i/etc in matrix
 def custom_gate(dimension):
-    ls = []
+    value_hold = []
     for y in range(dimension): 
         for x in range(dimension):
-            ls.append(float(input('What value for position ({}, {}): '.format(y+1, x+1))))
-    matrix = np.matrix(np.resize(ls, (dimension, dimension)))
+            value_hold.append(float(input('What value for position ({}, {}): '.format(y+1, x+1))))
+    matrix = np.matrix(np.resize(value_hold, (dimension, dimension)))
     if np.array_equal(np.dot(matrix, matrix.conj().T), np.identity(dimension)) == True:
         try:
             save = input("Would you like to save this gate? y or n: ")
             if save == 'y':
-                print('note that this can save a non-unitary matrix')
                 save_gate(matrix)
             return np.dot(matrix, qstat)
         except ValueError:
             print("not same size as vector, not applying")
+            return qstat#something must always get returned
     else:
         print("Invalid gate (not unitary), not applying")
+        return qstat
 
 def save_gate(matrix):
     matrix_name = input('please input a name for your matrix: ')
@@ -61,6 +62,7 @@ def apply(matrix, qstat):
         return np.dot(matrix, qstat)
     except ValueError:
         print("not same size as vector, not applying")
+        return qstat#may be solution to most recent bug
 
 def norm(qstat):
     return math.sqrt(sum([x**2 for x in list(qstat)]))
@@ -102,7 +104,6 @@ def probability(qstat, pn, qn = "all"):
 def measurement(qstat, qnum="all"):
     if qnum != "all":
         qnum = int(qnum)
-        #fill in
         zero_prob = probability(qstat, 0, qnum)
         rand = random.random()
         acceptable_stats = []
@@ -137,7 +138,7 @@ if simulation_type == 'ideal':
             print(qstat)
         elif next_item == 'import':
             file_read = input("input file name you would like to read: ")
-            try:#TEST!!!
+            try:
                 matrix_load = np.loadtxt(file_read, dtype='i', delimiter=',')#change dtype for floats?
                 gates[file_read[:file_read.index('.')]] = matrix_load
                 print(gates)
