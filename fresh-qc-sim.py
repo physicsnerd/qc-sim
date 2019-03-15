@@ -99,29 +99,28 @@ def probability(qstat, pn, qn = "all"):
         #do overall
         print('hmm')
 
-#go through which qnum is intended and where
 #figure out how probability arguments should be handled
-def measurement(qstat, qnum="all"):
-    if qnum != "all":
-        qnum = int(qnum)
-        zero_prob = probability(qstat, 0, qnum)
+def measurement(qstat, qnum_meas="all"):
+    if qnum_meas != "all":
+        qnum_meas = int(qnum_meas)
+        zero_prob = probability(qstat, 0, qnum_meas)
         rand = random.random()
         acceptable_stats = []
         if rand < zero_prob:
             #zero
             for i in basis_states:
-                if i[qnum] == '0':
+                if i[qnum_meas] == '0':
                     acceptable_stats.append(i)
             
         else:
             #one
             for i in basis_states:
-                if i[qnum] == '1':
+                if i[qnum_meas] == '1':
                     acceptable_stats.append(i)
         projection = projection(acceptable_stats)
         return normalize(np.dot(projection, qstat))
     else:
-        zero_prob = probability(qstat, 0, qnum)
+        zero_prob = probability(qstat, 0, qnum_meas)
         random_num = random.random()
         if random_num < zero_prob:
             return zero_stat
