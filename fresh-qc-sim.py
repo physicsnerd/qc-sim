@@ -95,6 +95,11 @@ def probability(qstat, pn, qn = "all"):
         return None#placeholders
     else:
         #do overall
+        for i in basis_states:
+            if i[qn] == str(pn):
+                state = i
+        qnum_index = basis_states.index(state)
+        amplitude = qnum[0][qnum_index]
         return None
 
 #figure out how probability arguments should be handled
@@ -173,4 +178,4 @@ else:
 print("end state: ", qstat)
 
 for i in basis_states:
-    print('probability of |'+i+'> on measurement: ', probability(qstat, i))
+    print('probability of |'+i+'> on measurement: ', probability(qstat, i))#pn?
