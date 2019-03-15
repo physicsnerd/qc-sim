@@ -51,10 +51,8 @@ def custom_gate(dimension):
     else:
         print("Invalid gate (not unitary), not applying")
 
-#look into np.loadtxt and np.savetxt and get the name for matrix from file name?
 def save_gate(matrix):
     matrix_name = input('please input a name for your matrix: ')
-    #file_name = input("please input the file name you would like to create or add too, with file ending if applicable: ")
     gates[matrix_name] = matrix
     np.savetxt(matrix_name+'.txt', matrix, delimiter=',')
 
