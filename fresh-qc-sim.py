@@ -1,4 +1,9 @@
 import numpy as np
+import random
+import math
+import itertools
+#save on github!!!!!!!!
+#check over var name use - clean up and see what is being reassigned
 
 qnum = int(input("How many qubits: "))
 
@@ -12,19 +17,23 @@ while iterate <= qnum:
             x = zero_state
         elif z_or_o == '1':
             x = one_state
-    if iterate == qnum:#change to elif?
+    if iterate == qnum:
         qstat = x
         print(qstat)
     else:
         x = np.kron(x,zero_state)
     iterate+=1
 
+basis_states = [] #is this generation even correct? check with mr. maine...?
+for i in range (0, 2**qnum):
+    basis_states.append(bin(i)[2:].zfill(qnum))
 done = 'n'
 
 realizations = {}
+gates = {}
 simulation_type = input("ideal or nonideal simulation: ")
 
-#ADD way to put pi/etc in matrix
+#ADD way to put pi/sqrt/i/etc in matrix
 def custom_gate(dimension):
     ls = []
     for y in range(dimension): 
@@ -35,49 +44,127 @@ def custom_gate(dimension):
         try:
             save = input("Would you like to save this gate? y or n: ")
             if save == 'y':
-                save_gate(matrix) #WEIRD it can save a faulty matrix
+                print('note that this can save a non-unitary matrix')
+                save_gate(matrix)
             return np.dot(matrix, qstat)
         except ValueError:
             print("not same size as vector, not applying")
     else:
         print("Invalid gate (not unitary), not applying")
 
+#look into np.loadtxt and np.savetxt and get the name for matrix from file name?
 def save_gate(matrix):
     matrix_name = input('please input a name for your matrix: ')
-    file_name = input("please input the file name you would like to create or add too, with file ending if applicable: ")
+    #file_name = input("please input the file name you would like to create or add too, with file ending if applicable: ")
+    gates[matrix_name] = matrix
+    np.savetxt(matrix_name+'.txt', matrix, delimiter=',')
+    '''
+    inbetween = list(itertools.chain(*matrix.tolist()))
+    inbetween_str = [str(int(i)) for i in inbetween]
+    matrix_string = ''.join(inbetween_str)
+    print(matrix_string)
     with open(file_name, 'a') as myfile:
-        myfile.write(matrix_name + ':' + str(matrix) + ' ') #WRITE actual dict?
-        
-#WRITE probabilities for printing and measurement (n = 1 or 0)
-#RESEARCH partial trace see Daniel Sank answer
-def probability(qstat, n):
-    print("hrm")
+        myfile.write(matrix_name + ':' + matrix_string + ' ') #test with import
+    '''
 
-#WRITE function that measures
-#note: look into how measurement of one qubit affects overall qstat
-#qnum: which qubit to measure, default is all are measured, ADD to main running
+def apply(matrix, qstat):
+    try:
+        return np.dot(matrix, qstat)
+    except ValueError:
+        print("not same size as vector, not applying")
+
+def norm(qstat):
+    return math.sqrt(sum([x**2 for x in list(qstat)]))
+
+def normalize(qstat):
+    norm = norm(qstat)
+    return 1/math.sqrt(norm)*qstat#scalar multiplication numpy? check right
+
+def projection(acceptable_stats):
+    #create qnum*qnum diagonal matrix
+    diag_gen = []
+    for i in range(0, qnum**2):
+        diag_gen.append(1)
+    diagonal_matrix = np.diag(diag_gen)
+    #list of indexes of allowed states
+    position_nums = []
+    for i in acceptable_stats:
+        position_nums.append(basis_states.index(i))
+    #modify diagonal matrix to comply with list
+    for i in range(0, qnum**2):
+        if i not in position_nums:
+            for k in range(0, qnum**2):
+                diagonal_matrix[i][k] = 0
+    return diagonal_matrix
+      
+#WRITE probabilities for printing and measurement (n = 1 or 0)
+#RESEARCH partial trace see Daniel Sank forum answer ask Harry?
+#FIGURE OUT what does this even need to look like? where am i calling from? &c
+def probability(qstat, pn, qn = "all"):
+    if qn == "all":
+        #do normal
+        print('hmm')
+    else:
+        #do overall
+        print('hmm')
+
+#go through which qnum is intended and where
+#figure out how probability arguments should be handled
 def measurement(qstat, qnum="all"):
-    print("hrm")
+    if qnum != "all":
+        qnum = int(qnum)
+        #fill in
+        zero_prob = probability(qstat, 0, qnum)
+        rand = random.random()
+        acceptable_stats = []
+        if rand < zero_prob:
+            #zero
+            for i in basis_states:
+                if i[qnum] == '0':
+                    acceptable_stats.append(i)
+            
+        else:
+            #one
+            for i in basis_states:
+                if i[qnum] == '1':
+                    acceptable_stats.append(i)
+        projection = projection(acceptable_stats)
+        return normalize(np.dot(projection, qstat))
+    else:
+        zero_prob = probability(qstat, 0, qnum)
+        random_num = random.random()
+        if random_num < zero_prob:
+            return zero_stat
+        else:
+            return one_stat
 
 #actual running
 if simulation_type == 'ideal':
     while done == 'n':
-        next_item = input("custom gate or measurement or import: ")
+        next_item = input("custom gate or measurement or import or prev used: ")
         if next_item == 'measurement':
-            qstat = measurement(qstat)
-        elif next_item == 'import': #TEST
+            measure_num = input('input all or which qubit num you would like measured: ')
+            qstat = measurement(qstat, measure_num)
+            print(qstat)
+        elif next_item == 'import':
             file_read = input("input file name you would like to read: ")
-            try:
-                with open(file_read) as readfile:
-                    data = readfile.read()
-                    gates = {} #make from data, also figure out how to input data
-                    gate_apply = input("which gate from your file would you like to use: ")
-                    try:
-                        qstat = np.dot(gates[gate_apply],qstat)
-                    except ValueError:
-                        print("not same size as vector, not applying")
+            try:#TEST!!!
+                matrix_load = np.loadtxt(file_read, dtype='i', delimiter=',')#change dtype for floats?
+                gates[file_read[:file_read.index('.')]] = matrix_load
+                print(gates)
+                matrix = input("which gate from your file would you like to use: ")
+                qstat = apply(gates[matrix], qstat)
+                print(qstat)
             except FileNotFoundError:
                 print("file not found, check your spelling")
+        elif next_item == 'prev used':
+            print('list of gates: ',gates)
+            matrix = input("please input the matrix name: ")
+            try:
+                qstat = apply(gates[matrix],qstat)
+                print(qstat)
+            except KeyError:
+                print("this gate does not seem to have been saved in the past. try custom gate")
         else:
             dimension = int(input("Please give the size of your gate: "))
             qstat = custom_gate(dimension)
@@ -87,11 +174,14 @@ if simulation_type == 'ideal':
 #RESEARCH decoherence times and error correction and noise functions
 #WRITE this section of code
 #CONSIDER having user import decoherence times they wish, but own noise function
-        #nothing special has to be done for error correction
+        #nothing special has to be done for error correction?
 else:
-    realization = input("what realization are you using? select from list above: ")
+    print('this is not written yet; sorry!')
+    #realization = input("what realization are you using? select from list above: ")
 
-#provides outputs
+#provides output
+    #probably different probability issue than with measurement...?
 print("end state: ", qstat)
+#rewrite based on basis-states list
 print("probability of |1> on measurement: ", probability(qstat, 1))
 print("probability of |0> on measurement: ", probability(qstat, 0))
