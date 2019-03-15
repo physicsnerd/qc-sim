@@ -89,24 +89,28 @@ def projection(acceptable_stats):
 #WRITE probabilities for printing and measurement (n = 1 or 0)
 #RESEARCH partial trace see Daniel Sank forum answer ask Harry?
 #FIGURE OUT what does this even need to look like? where am i calling from? &c
-def probability(qstat, pn, qn = "all"):
-    if qn == "all":
+def probability(qstat, qn = "all", pn = ''):
+    if qn != "all":
         #do normal
-        return None#placeholders
-    else:
-        #do overall
+        state = qn
+        qnum_index = basis_states.index(state)
+        amplitude = np.array(qstat)[qnum_index][0]
+        prob = abs(amplitude)**2
+        return prob
+    else:#placeholder, not done
         for i in basis_states:
             if i[qn] == str(pn):
                 state = i
         qnum_index = basis_states.index(state)
         amplitude = qnum[0][qnum_index]
+        prob = math.abs(amplitude)**2
         return None
 
 #figure out how probability arguments should be handled
 def measurement(qstat, qnum_meas="all"):
     if qnum_meas != "all":
         qnum_meas = int(qnum_meas)
-        zero_prob = probability(qstat, 0, qnum_meas)
+        zero_prob = probability(qstat, qnum_meas, 0)
         rand = random.random()
         acceptable_stats = []
         if rand < zero_prob:
@@ -178,4 +182,4 @@ else:
 print("end state: ", qstat)
 
 for i in basis_states:
-    print('probability of |'+i+'> on measurement: ', probability(qstat, i))#pn?
+    print('probability of |'+i+'> on measurement: ', probability(qstat, i))
