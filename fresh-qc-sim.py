@@ -169,8 +169,7 @@ else:
     #realization = input("what realization are you using? select from list above: ")
 
 #provides output
-    #probably different probability issue than with measurement...?
 print("end state: ", qstat)
-#rewrite based on basis-states list
-print("probability of |1> on measurement: ", probability(qstat, 1))
-print("probability of |0> on measurement: ", probability(qstat, 0))
+
+for i in basis_states:
+    print('probability of '+i+'on measurement: ', probability(qstat, i))
