@@ -1,8 +1,6 @@
 import numpy as np
 import random
 import math
-import itertools
-#check over var name use - clean up and see what is being reassigned
 
 qnum = int(input("How many qubits: "))
 
