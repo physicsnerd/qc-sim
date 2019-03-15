@@ -33,7 +33,7 @@ simulation_type = input("ideal or nonideal simulation: ")
 #ADD way to put pi/sqrt/i/etc in matrix
 def custom_gate(dimension):
     value_hold = []
-    for y in range(dimension): 
+    for y in range(dimension):
         for x in range(dimension):
             value_hold.append(float(input('What value for position ({}, {}): '.format(y+1, x+1))))
     matrix = np.matrix(np.resize(value_hold, (dimension, dimension)))
@@ -45,7 +45,7 @@ def custom_gate(dimension):
             return np.dot(matrix, qstat)
         except ValueError:
             print("not same size as vector, not applying")
-            return qstat#something must always get returned
+            return qstat
     else:
         print("Invalid gate (not unitary), not applying")
         return qstat
@@ -60,14 +60,14 @@ def apply(matrix, qstat):
         return np.dot(matrix, qstat)
     except ValueError:
         print("not same size as vector, not applying")
-        return qstat#may be solution to most recent bug
+        return qstat
 
 def norm(qstat):
     return math.sqrt(sum([x**2 for x in list(qstat)]))
 
 def normalize(qstat):
     norm = norm(qstat)
-    return 1/math.sqrt(norm)*qstat#scalar multiplication numpy? check right
+    return 1/math.sqrt(norm)*qstat#scalar multiplication numpy? check if right
 
 def projection(acceptable_stats):
     #create qnum*qnum diagonal matrix
