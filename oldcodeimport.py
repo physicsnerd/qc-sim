@@ -33,3 +33,12 @@
                         gates[i] = savedgates[i]
                     #apply gate
                     '''
+#stuff below from save_gate(), stuff above from import for runtime
+'''
+    inbetween = list(itertools.chain(*matrix.tolist()))
+    inbetween_str = [str(int(i)) for i in inbetween]
+    matrix_string = ''.join(inbetween_str)
+    print(matrix_string)
+    with open(file_name, 'a') as myfile:
+        myfile.write(matrix_name + ':' + matrix_string + ' ') #test with import
+    '''

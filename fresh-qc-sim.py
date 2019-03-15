@@ -58,14 +58,6 @@ def save_gate(matrix):
     #file_name = input("please input the file name you would like to create or add too, with file ending if applicable: ")
     gates[matrix_name] = matrix
     np.savetxt(matrix_name+'.txt', matrix, delimiter=',')
-    '''
-    inbetween = list(itertools.chain(*matrix.tolist()))
-    inbetween_str = [str(int(i)) for i in inbetween]
-    matrix_string = ''.join(inbetween_str)
-    print(matrix_string)
-    with open(file_name, 'a') as myfile:
-        myfile.write(matrix_name + ':' + matrix_string + ' ') #test with import
-    '''
 
 def apply(matrix, qstat):
     try:
