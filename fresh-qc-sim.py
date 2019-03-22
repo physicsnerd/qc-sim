@@ -30,7 +30,8 @@ realizations = {}#not yet in use
 gates = {}
 simulation_type = input("ideal or nonideal simulation: ")
 
-#ADD way to put pi/sqrt/i/etc in matrix
+#ADD way to put pi/sqrt/i/etc in matrix - look into Pyparsing; see SO question
+#use eval() and possibly one starred github repo with imaginary #s added
 def custom_gate(dimension):
     value_hold = []
     for y in range(dimension):
@@ -105,7 +106,7 @@ def probability(qstat, qn = "all", pn = ''):
         prob = math.abs(amplitude)**2
         return None
 
-#figure out how probability arguments should be handled
+#figure out how probability arguments should be handled; maybe rewrite?
 def measurement(qstat, qnum_meas="all"):
     if qnum_meas != "all":
         qnum_meas = int(qnum_meas)
