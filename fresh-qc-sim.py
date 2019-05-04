@@ -1,6 +1,7 @@
 import numpy as np
 import random
 import math
+import cmath#so eval can work
 
 qnum = int(input("How many qubits: "))
 
@@ -30,13 +31,13 @@ realizations = {}#not yet in use
 gates = {}
 simulation_type = input("ideal or nonideal simulation: ")
 
-#ADD way to put pi/sqrt/i/etc in matrix - look into Pyparsing; see SO question
-#use eval() and possibly one starred github repo with imaginary #s added
+#write up docs with warning/explanation of eval()
+#why doesn't eval('j') work for imaginary #s?
 def custom_gate(dimension):
     value_hold = []
     for y in range(dimension):
         for x in range(dimension):
-            value_hold.append(float(input('What value for position ({}, {}): '.format(y+1, x+1))))
+            value_hold.append(eval(input('What value for position ({}, {}): '.format(y+1, x+1))))
     matrix = np.matrix(np.resize(value_hold, (dimension, dimension)))
     if np.array_equal(np.dot(matrix, matrix.conj().T), np.identity(dimension)) == True:
         try:
