@@ -39,7 +39,7 @@ def custom_gate(dimension):
         for x in range(dimension):
             value_hold.append(eval(input('What value for position ({}, {}): '.format(y+1, x+1))))
     matrix = np.matrix(np.resize(value_hold, (dimension, dimension)))
-    if np.array_equal(np.dot(matrix, matrix.conj().T), np.identity(dimension)):
+    if np.allclose(np.dot(matrix, matrix.conj().T), np.eye(dimension)):
         try:
             save = input("Would you like to save this gate? y or n: ")
             if save == 'y':
