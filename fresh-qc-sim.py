@@ -31,15 +31,15 @@ realizations = {}#not yet in use
 gates = {}
 simulation_type = input("ideal or nonideal simulation: ")
 
-#write up docs with warning/explanation of eval()
-#why doesn't eval('j') work for imaginary #s?
+#for 'j' write '1j'
+#eventually change eval() to custom parser...
 def custom_gate(dimension):
     value_hold = []
     for y in range(dimension):
         for x in range(dimension):
             value_hold.append(eval(input('What value for position ({}, {}): '.format(y+1, x+1))))
     matrix = np.matrix(np.resize(value_hold, (dimension, dimension)))
-    if np.array_equal(np.dot(matrix, matrix.conj().T), np.identity(dimension)) == True:
+    if np.array_equal(np.dot(matrix, matrix.conj().T), np.identity(dimension)):
         try:
             save = input("Would you like to save this gate? y or n: ")
             if save == 'y':
