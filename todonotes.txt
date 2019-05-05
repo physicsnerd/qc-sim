@@ -1,0 +1,13 @@
+important notes for qc sim:
+1) error with 4x4 not gate not working...leaves unchanged...matrix is
+1000
+0100
+0001
+0010
+look into, and put in thorough testing to make sure no other weird errors in output.
+
+2) run through probability/measurement stuff carefully! start sketching out final code.
+
+3) put in custom parser so eval() not needed.
+
+4) start sketching out ideas for nonideal half of simulation.
