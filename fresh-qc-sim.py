@@ -88,17 +88,15 @@ def projection(acceptable_stats):
                 diagonal_matrix[i][k] = 0
     return diagonal_matrix
 
-def probability(qstat, qn):
-    state = qn
-    qnum_index = basis_states.index(state)
+def probability(qstat, qnum_index):
     amplitude = np.array(qstat)[qnum_index][0]
     prob = abs(amplitude)**2
     return prob
 
-#rewrite...review Harry emails
+#review != 'all' section
 def measurement(qstat, qnum_meas="all"):
     if qnum_meas != "all":
-        qnum_meas = int(qnum_meas)#but basis state used by prob?
+        qnum_meas = int(qnum_meas)
         zero_prob = probability(qstat, qnum_meas)
         rand = random.random()
         acceptable_stats = []
@@ -116,13 +114,16 @@ def measurement(qstat, qnum_meas="all"):
         projection = projection(acceptable_stats)
         return normalize(np.dot(projection, qstat))
     else:
+        #error in here
         probabilities = []
         for i in qstat:
-            probabilities.append(probability(qstat, qstat.index(i)))
+            probabilities.append(probability(qstat, np.where(qstat==i)[0][0]))
         rand_int = random.random()
+        zero_vector = np.zeros((qnum, 1))
         for i in probabilities:
             if rand_int < sum(probabilities[:probabilities.index(i)]):
-                return basis_states[probabilities.index(i)]
+                zero_vector[probabilities.index(i)][0] = 1
+                return zero_vector
 
 #actual running
 if simulation_type == 'ideal':
@@ -172,4 +173,4 @@ else:
 print("end state: ", qstat)
 
 for i in basis_states:
-    print('probability of |'+i+'> on measurement: ', probability(qstat, i))
+    print('probability of |'+i+'> on measurement: ', probability(qstat, basis_states.index(i)))
