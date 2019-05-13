@@ -120,7 +120,7 @@ def measurement(qstat, qnum_meas="all"):
         for i in qstat:
             probabilities.append(probability(qstat, qstat.index(i)))
         rand_int = random.random()
-        for i in probabilities
+        for i in probabilities:
             if rand_int < sum(probabilities[:probabilities.index(i)]):
                 return basis_states[probabilities.index(i)]
 
