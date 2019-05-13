@@ -1,7 +1,7 @@
 import numpy as np
 import random
 import math
-import cmath#so eval can work
+import cmath#so eval can work w/ complex #s
 
 qnum = int(input("How many qubits: "))
 
@@ -22,7 +22,7 @@ while iterate <= qnum:
         x = np.kron(x,zero_state)
     iterate+=1
 
-basis_states = [] #is this generation even correct? check with mr. maine...?
+basis_states = [] #double check this method of generation
 for i in range(0, 2**qnum):
     basis_states.append(bin(i)[2:].zfill(qnum))
 done = 'n'
@@ -87,31 +87,19 @@ def projection(acceptable_stats):
             for k in range(0, qnum**2):
                 diagonal_matrix[i][k] = 0
     return diagonal_matrix
-      
-#RESEARCH partial trace see Daniel Sank forum answer ask Harry?
-#FIGURE OUT how to handle measurement probability see above
-def probability(qstat, qn = "all", pn = ''):
-    if qn != "all":
-        #do normal
-        state = qn
-        qnum_index = basis_states.index(state)
-        amplitude = np.array(qstat)[qnum_index][0]
-        prob = abs(amplitude)**2
-        return prob
-    else:#placeholder, not done
-        for i in basis_states:
-            if i[qn] == str(pn):
-                state = i
-        qnum_index = basis_states.index(state)
-        amplitude = qnum[0][qnum_index]
-        prob = math.abs(amplitude)**2
-        return None
 
-#figure out how probability arguments should be handled; maybe rewrite?
+def probability(qstat, qn):
+    state = qn
+    qnum_index = basis_states.index(state)
+    amplitude = np.array(qstat)[qnum_index][0]
+    prob = abs(amplitude)**2
+    return prob
+
+#rewrite...review Harry emails
 def measurement(qstat, qnum_meas="all"):
     if qnum_meas != "all":
-        qnum_meas = int(qnum_meas)
-        zero_prob = probability(qstat, qnum_meas, 0)
+        qnum_meas = int(qnum_meas)#but basis state used by prob?
+        zero_prob = probability(qstat, qnum_meas)
         rand = random.random()
         acceptable_stats = []
         if rand < zero_prob:
@@ -128,12 +116,13 @@ def measurement(qstat, qnum_meas="all"):
         projection = projection(acceptable_stats)
         return normalize(np.dot(projection, qstat))
     else:
-        zero_prob = probability(qstat, 0, qnum_meas)
-        random_num = random.random()
-        if random_num < zero_prob:
-            return zero_stat
-        else:
-            return one_stat
+        probabilities = []
+        for i in qstat:
+            probabilities.append(probability(qstat, qstat.index(i)))
+        rand_int = random.random()
+        for i in probabilities
+            if rand_int < sum(probabilities[:probabilities.index(i)]):
+                return basis_states[probabilities.index(i)]
 
 #actual running
 if simulation_type == 'ideal':
