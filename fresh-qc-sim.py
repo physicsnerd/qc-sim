@@ -65,11 +65,12 @@ def apply(matrix, qstat):
         return qstat
 
 def norm(qstat):
+    print(sum([x**2 for x in list(qstat)]))
     return math.sqrt(sum([x**2 for x in list(qstat)]))
 
 def normalize(qstat):
-    norm = norm(qstat)
-    return np.dot(1/math.sqrt(norm),qstat)
+    norm_result = norm(qstat)
+    return np.dot(1/math.sqrt(norm_result),qstat)#divide by zero error here
 
 def projection(acceptable_stats):
     #create qnum*qnum diagonal matrix
@@ -105,25 +106,25 @@ def measurement(qstat, qnum_meas="all"):
             for i in basis_states:
                 if i[qnum_meas] == '0':
                     acceptable_stats.append(i)
-            
         else:
             #one
             for i in basis_states:
                 if i[qnum_meas] == '1':
                     acceptable_stats.append(i)
-        projection = projection(acceptable_stats)
-        return normalize(np.dot(projection, qstat))
+        projection_result = projection(acceptable_stats)
+        return normalize(np.dot(projection_result, qstat))
     else:
-        #error in here
         probabilities = []
         for i in qstat:
             probabilities.append(probability(qstat, np.where(qstat==i)[0][0]))
         rand_int = random.random()
-        zero_vector = np.zeros((qnum, 1))
+        zero_vector = np.zeros((qnum**2, 1))
+        counter = 0
         for i in probabilities:
-            if rand_int < sum(probabilities[:probabilities.index(i)]):
-                zero_vector[probabilities.index(i)][0] = 1
+            if rand_int < sum(probabilities[:counter+1]):
+                zero_vector[counter][0] = 1
                 return zero_vector
+            counter+=1
 
 #actual running
 if simulation_type == 'ideal':
@@ -136,7 +137,7 @@ if simulation_type == 'ideal':
         elif next_item == 'import':
             file_read = input("input file name you would like to read: ")
             try:
-                matrix_load = np.loadtxt(file_read, dtype='i', delimiter=',')#change dtype for floats?
+                matrix_load = np.loadtxt(file_read, delimiter=',')
                 gates[file_read[:file_read.index('.')]] = matrix_load
                 print(gates)
                 try:
@@ -161,13 +162,10 @@ if simulation_type == 'ideal':
             print(qstat)
         done = input("Done with your qubits? y or n: ")
 
-#RESEARCH decoherence times and error correction and noise functions
-#WRITE this section of code
-#CONSIDER having user import decoherence times they wish, but own noise function
-        #nothing special has to be done for error correction?
+#consider having user import decoherence times they wish, but own noise function
+#nothing special has to be done for error correction?
 else:
     print('this is not written yet; sorry!')
-    #realization = input("what realization are you using? select from list above: ")
 
 #provides output
 print("end state: ", qstat)
