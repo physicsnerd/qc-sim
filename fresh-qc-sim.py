@@ -27,7 +27,6 @@ for i in range(0, 2**qnum):
     basis_states.append(bin(i)[2:].zfill(qnum))
 done = 'n'
 
-realizations = {}#not yet in use
 gates = {}
 simulation_type = input("ideal or nonideal simulation: ")
 
@@ -65,8 +64,8 @@ def apply(matrix, qstat):
         return qstat
 
 def norm(qstat):
-    print(sum([x**2 for x in list(qstat)]))
-    return math.sqrt(sum([x**2 for x in list(qstat)]))
+    return math.sqrt(np.sum(np.square(qstat)))
+    #return math.sqrt(sum([x**2 for x in list(qstat)]))
 
 def normalize(qstat):
     norm_result = norm(qstat)
@@ -112,6 +111,7 @@ def measurement(qstat, qnum_meas="all"):
                 if i[qnum_meas] == '1':
                     acceptable_stats.append(i)
         projection_result = projection(acceptable_stats)
+        print(projection_result)#problem is with projection result
         return normalize(np.dot(projection_result, qstat))
     else:
         probabilities = []
