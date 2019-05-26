@@ -22,7 +22,7 @@ while iterate <= qnum:
         x = np.kron(x,zero_state)
     iterate+=1
 
-basis_states = [] #double check this method of generation
+basis_states = []
 for i in range(0, 2**qnum):
     basis_states.append(bin(i)[2:].zfill(qnum))
 done = 'n'
