@@ -96,23 +96,20 @@ def probability(qstat, qnum_index):
 def measurement(qstat, qnum_meas="all"):
     if qnum_meas != "all":
         qnum_meas = int(qnum_meas)
-        zero_prob = probability(qstat, qnum_meas)#something's wrong here
-        rand = random.random()#always says qubit will be on
+        zero_prob = 1 - probability(qstat, qnum_meas-1)
+        rand = random.random()
         acceptable_stats = []
         if rand < zero_prob:
-            print('zero')
             #zero
             for i in basis_states:
                 if i[qnum_meas-1] == '0':
                     acceptable_stats.append(i)
         else:
-            print('1')
             #one
             for i in basis_states:
                 if i[qnum_meas-1] == '1':
                     acceptable_stats.append(i)
         projection_result = projection(acceptable_stats)
-        print(projection_result)
         return normalize(np.dot(projection_result, qstat))
     else:
         probabilities = []
