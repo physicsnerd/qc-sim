@@ -1,8 +1,0 @@
-important notes for qc sim:
-1) run through probability/measurement stuff carefully! start sketching out final code.
-
-2) put in custom parser so eval() not needed.
-
-3) start sketching out ideas for nonideal half of simulation.
-
-4) check if basis states gen is correct
