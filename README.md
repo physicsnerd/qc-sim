@@ -15,6 +15,8 @@ This quantum computer simulator allows users to simulate systems of any number o
 
 Once cloned, run file labeled fresh-qc-sim.py. It will begin by asking you how many qubits you'd like to use - feel free to input any number, though again, you will be limited by your computer's abilities. You can then start in the 0 or 1 state. When it asks 'ideal or nonideal' please enter 'ideal' as the nonideal capabilities are currently being designed/programmed. You can then select the options it provides - importing gate, measuring your qubits (either one individual qubit or all of them), entering a custom gate (which you can then save to import in another run if you so choose), or using a previously imported or created gate. It will show you the state of your system after every operation you perform, and inquire if you'd like to do more. When you are done, it will provide the probability of each basis state being the result upon measurement and the final state.
 
+Please note that if you put gibberish in when an input is requested, python will give you an error - with very few exceptions, I haven't written code to sanitize user inputs. If this is actually a problem for you/your uses, feel free to start an issue.
+
 ### Generating custom gates
 
 The file gate_calc.py allows users to input any size matrix and scale it for use on larger numbers of qubits. This can be very useful for calculating custom gates. One feature that I need to add here is the ability to save these generated gates in the proper format for importing in the main simulator; currently you need to calculate it and then type in the result element by element in the custom gate option of fresh-qc-sim.py.
