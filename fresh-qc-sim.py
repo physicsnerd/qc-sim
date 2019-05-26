@@ -65,11 +65,10 @@ def apply(matrix, qstat):
 
 def norm(qstat):
     return math.sqrt(np.sum(np.square(qstat)))
-    #return math.sqrt(sum([x**2 for x in list(qstat)]))
 
 def normalize(qstat):
     norm_result = norm(qstat)
-    return np.dot(1/math.sqrt(norm_result),qstat)#divide by zero error here
+    return np.dot(1/math.sqrt(norm_result),qstat)
 
 def projection(acceptable_stats):
     #create qnum*qnum diagonal matrix
@@ -97,21 +96,23 @@ def probability(qstat, qnum_index):
 def measurement(qstat, qnum_meas="all"):
     if qnum_meas != "all":
         qnum_meas = int(qnum_meas)
-        zero_prob = probability(qstat, qnum_meas)
-        rand = random.random()
+        zero_prob = probability(qstat, qnum_meas)#something's wrong here
+        rand = random.random()#always says qubit will be on
         acceptable_stats = []
         if rand < zero_prob:
+            print('zero')
             #zero
             for i in basis_states:
-                if i[qnum_meas] == '0':
+                if i[qnum_meas-1] == '0':
                     acceptable_stats.append(i)
         else:
+            print('1')
             #one
             for i in basis_states:
-                if i[qnum_meas] == '1':
+                if i[qnum_meas-1] == '1':
                     acceptable_stats.append(i)
         projection_result = projection(acceptable_stats)
-        print(projection_result)#problem is with projection result
+        print(projection_result)
         return normalize(np.dot(projection_result, qstat))
     else:
         probabilities = []
