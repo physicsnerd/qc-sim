@@ -64,7 +64,9 @@ def apply(matrix, qstat):
         return qstat
 
 def norm(qstat):
-    return math.sqrt(np.sum(np.square(qstat)))
+    print(qstat)
+    qstat_version = np.squeeze(np.asarray(qstat))
+    return math.sqrt(np.dot(qstat_version, qstat_version))
 
 def normalize(qstat):
     norm_result = norm(qstat)
@@ -92,7 +94,7 @@ def probability(qstat, qnum_index):
     prob = abs(amplitude)**2
     return prob
 
-#review != 'all' section
+#measurement in different bases?
 def measurement(qstat, qnum_meas="all"):
     if qnum_meas != "all":
         qnum_meas = int(qnum_meas)
@@ -101,11 +103,13 @@ def measurement(qstat, qnum_meas="all"):
         acceptable_stats = []
         if rand < zero_prob:
             #zero
+            print(qnum_meas,' qubit measured as zero')
             for i in basis_states:
                 if i[qnum_meas-1] == '0':
                     acceptable_stats.append(i)
         else:
             #one
+            print(qnum_meas,' qubit measured as one')
             for i in basis_states:
                 if i[qnum_meas-1] == '1':
                     acceptable_stats.append(i)
@@ -163,7 +167,7 @@ if simulation_type == 'ideal':
 #consider having user import decoherence times they wish, but own noise function
 #nothing special has to be done for error correction?
 else:
-    print('this is not written yet; sorry!')
+    print('this is not done yet; sorry!')
 
 #provides output
 print("end state: ", qstat)
