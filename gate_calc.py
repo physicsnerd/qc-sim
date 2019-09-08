@@ -25,6 +25,11 @@ def gate_scale(gate, ap_qubit):
                 x = np.kron(x, kron_num[i])
         return x
 
+def save_gate(matrix):
+    matrix_name = input('please input a name for your matrix: ')
+    np.savetxt(matrix_name+'.txt', matrix, delimiter=',')
+    
+
 dimension = int(input('size of matrix: '))
 value_hold = []
 for y in range(dimension):
@@ -33,3 +38,4 @@ for y in range(dimension):
 matrix = np.matrix(np.resize(value_hold, (dimension, dimension)))
 ap_qubit = int(input('qubit to apply to: '))
 print(gate_scale(matrix, ap_qubit))
+save_gate(matrix)
