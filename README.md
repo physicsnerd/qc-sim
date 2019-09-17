@@ -19,11 +19,10 @@ Please note that if you put gibberish in when an input is requested, python will
 
 ### Generating custom gates
 
-The file gate_calc.py allows users to input any size matrix and scale it for use on larger numbers of qubits. This can be very useful for calculating custom gates. One feature that I need to add here is the ability to save these generated gates in the proper format for importing in the main simulator; currently you need to calculate it and then type in the result element by element in the custom gate option of fresh-qc-sim.py.
+The file gate_calc.py allows users to input any size matrix and scale it for use on larger numbers of qubits. This can be very useful for calculating custom gates. You can then directly save these gates and then import them during runtime of the simulator.
 
 ## Soon to be added features
-
-I'm currently working on adding a custom parser to the inputs for custom gates so that `eval()` will not be used. The nonideal section is a more longterm feature which will incorporate a noise function to simulate decoherence and allow researchers to test error correction systems and get a better idea of how their algorithms will run on a real quantum computer.
+The nonideal section is a more longterm feature which will incorporate a noise function to simulate decoherence and allow researchers to test error correction systems and get a better idea of how their algorithms will run on a real quantum computer. I'm also working on uploading a folder of starter gates so people can immediately start working with the simulator. I'm also going to add a method to input a file of commands instead of having to enter each individual command separately.
 
 ## Errors? Features you want?
 
