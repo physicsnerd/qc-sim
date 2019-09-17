@@ -3,7 +3,7 @@ A quantum computer simulator.
 
 ## Eval() is used in this program!
 
-This code currently uses eval() in the custom_gate() function to allow users to input complex numbers, square roots, &c as entries for their gates. This will probably eventually be changed to a safer custom parser, but for now it will be eval(). Please do not download this to something that has public access. 
+This code currently uses eval() in the custom_gate() function to allow users to input complex numbers, square roots, &c as entries for their gates. HOWEVER, the inputs going into eval() are sanitized - stripped of all quotation marks, forward slashes, and backward slashes. If you believe this is not sufficient sanitization, please open an issue.
 
 ## Using the simulator
 
