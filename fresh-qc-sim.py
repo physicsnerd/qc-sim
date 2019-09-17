@@ -27,16 +27,25 @@ for i in range(0, 2**qnum):
     basis_states.append(bin(i)[2:].zfill(qnum))
 done = 'n'
 
+'''
+#sandbox eval for custom_gate
+safe_funcs_list = ['math','acos', 'asin', 'atan', 'atan2', 'ceil', 'cos', 'cosh', 'degrees',
+                   'e', 'exp', 'fabs', 'floor', 'fmod', 'frexp', 'hypot', 'ldexp', 'log',
+                   'log10', 'modf', 'pi', 'pow', 'radians', 'sin', 'sinh', 'sqrt', 'tan', 'tanh']
+safe_funcs = dict([ (k, locals().get(k, None)) for k in safe_funcs_list ])
 gates = {}
 simulation_type = input("ideal or nonideal simulation: ")
+'''
 
 #for 'j' write '1j'
-#eventually change eval() to custom parser...
+#sandbox eval
 def custom_gate(dimension):
     value_hold = []
     for y in range(dimension):
         for x in range(dimension):
-            value_hold.append(eval(input('What value for position ({}, {}): '.format(y+1, x+1))))
+            element = input('What value for position ({}, {}): '.format(y+1, x+1))
+            element = element.strip("\"\'\\\/") #sanitizes input
+            value_hold.append(eval(element))
     matrix = np.matrix(np.resize(value_hold, (dimension, dimension)))
     if np.allclose(np.dot(matrix, matrix.conj().T), np.eye(dimension)):
         try:
