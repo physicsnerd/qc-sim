@@ -27,8 +27,14 @@ for i in range(0, 2**qnum):
     basis_states.append(bin(i)[2:].zfill(qnum))
 done = 'n'
 
+things_done = []
+gates = {}
+simulation_type = input("ideal or nonideal simulation: ")
+
+def record(name):
+    things_done.append(name)
+
 #for 'j' write '1j'
-#sandbox eval
 def custom_gate(dimension):
     value_hold = []
     for y in range(dimension):
@@ -42,6 +48,9 @@ def custom_gate(dimension):
             save = input("Would you like to save this gate? y or n: ")
             if save == 'y':
                 save_gate(matrix)
+            else:
+                matrix_name = input("Please input matrix name: ")
+                record(matrix_name)
             return np.dot(matrix, qstat)
         except ValueError:
             print("not same size as vector, not applying")
@@ -52,6 +61,7 @@ def custom_gate(dimension):
 
 def save_gate(matrix):
     matrix_name = input('please input a name for your matrix: ')
+    record(matrix_name)
     gates[matrix_name] = matrix
     np.savetxt(matrix_name+'.txt', matrix, delimiter=',')
 
@@ -134,6 +144,7 @@ if simulation_type == 'ideal':
         if next_item == 'measurement':
             measure_num = input('input all or which qubit num you would like measured: ')
             qstat = measurement(qstat, measure_num)
+            record('measurement: '+measure_num)
             print(qstat)
         elif next_item == 'import':
             file_read = input("input file name you would like to read: ")
@@ -144,6 +155,7 @@ if simulation_type == 'ideal':
                 try:
                     matrix = input("which gate from your file would you like to use: ")
                     qstat = apply(gates[matrix], qstat)
+                    record(matrix)
                 except KeyError:
                     print('this gate does not seem to have been saved in the past. try custom gate')
                 print(qstat)
@@ -155,6 +167,7 @@ if simulation_type == 'ideal':
             try:
                 qstat = apply(gates[matrix],qstat)
                 print(qstat)
+                record(matrix)
             except KeyError:
                 print("this gate does not seem to have been saved in the past. try custom gate")
         else:
@@ -170,6 +183,11 @@ else:
 
 #provides output
 print("end state: ", qstat)
+record("end state: "+str(qstat))
 
 for i in basis_states:
     print('probability of |'+i+'> on measurement: ', probability(qstat, basis_states.index(i)))
+    record('probability of |'+i+'> on measurement: '+str(probability(qstat, basis_states.index(i))))
+
+#create text file from record list [LOOK for missing parens...ew]
+
