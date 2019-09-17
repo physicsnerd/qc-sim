@@ -2,6 +2,7 @@ import numpy as np
 import random
 import math
 import cmath#so eval can work w/ complex #s
+from datetime import datetime #for output file
 
 qnum = int(input("How many qubits: "))
 
@@ -190,4 +191,8 @@ for i in basis_states:
     record('probability of |'+i+'> on measurement: '+str(probability(qstat, basis_states.index(i))))
 
 #create text file from record list [LOOK for missing parens...ew]
-
+filename = str(datetime.now())+'-qc-sim-run.txt'
+with open(filename, 'w') as file:
+    file.write(str(datetime.now())+'\n')
+    for i in things_done:
+        file.write(i+'\n')
