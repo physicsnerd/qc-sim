@@ -27,16 +27,6 @@ for i in range(0, 2**qnum):
     basis_states.append(bin(i)[2:].zfill(qnum))
 done = 'n'
 
-'''
-#sandbox eval for custom_gate
-safe_funcs_list = ['math','acos', 'asin', 'atan', 'atan2', 'ceil', 'cos', 'cosh', 'degrees',
-                   'e', 'exp', 'fabs', 'floor', 'fmod', 'frexp', 'hypot', 'ldexp', 'log',
-                   'log10', 'modf', 'pi', 'pow', 'radians', 'sin', 'sinh', 'sqrt', 'tan', 'tanh']
-safe_funcs = dict([ (k, locals().get(k, None)) for k in safe_funcs_list ])
-gates = {}
-simulation_type = input("ideal or nonideal simulation: ")
-'''
-
 #for 'j' write '1j'
 #sandbox eval
 def custom_gate(dimension):
