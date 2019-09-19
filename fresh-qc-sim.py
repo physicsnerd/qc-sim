@@ -1,7 +1,7 @@
 import numpy as np
 import random
 import math
-import cmath#so eval can work w/ complex #s
+import cmath #so eval can work w/ complex #s
 from datetime import datetime #for output file
 
 qnum = int(input("How many qubits: "))
@@ -74,13 +74,14 @@ def apply(matrix, qstat):
         return qstat
 
 def norm(qstat):
-    print(qstat)
-    qstat_version = np.squeeze(np.asarray(qstat))
-    return math.sqrt(np.dot(qstat_version, qstat_version))
+    #print(qstat)
+    #qstat_version = np.squeeze(np.asarray(qstat))
+    #return math.sqrt(np.dot(qstat_version, qstat_version))
+    return math.sqrt(sum(float(i)**2 for i in qstat))
 
 def normalize(qstat):
     norm_result = norm(qstat)
-    return np.dot(1/math.sqrt(norm_result),qstat)
+    return np.dot(1/(norm_result),qstat)
 
 def projection(acceptable_stats):
     #create qnum*qnum diagonal matrix
