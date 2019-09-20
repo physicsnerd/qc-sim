@@ -14,7 +14,7 @@ if input_mode == 'file':
         for i in file:#make sure i is each new line
             file_contents.append(i.strip('\n'))
     file_commands = file_contents[3:]
-    qnum = file_contents[0]
+    qnum = int(file_contents[0])
     simulation_type = file_contents[1]
     z_or_o = file_contents[2]
 else:
@@ -197,15 +197,15 @@ if input_mode == 'cli':
 else:
     #file input run
     for i in file_commands:
-        if 'measurement' in i:
+        if 'measure' in i:
             if any(k.isdigit() for k in i):
                 num = i.strip('measurement\n ')
                 qstat = measurement(qstat, num)
             else:
                 qstat = measurement(qstat, 'all')
         else:
-            matrix_load = np.loadtext(i, delimiter=',')
-            qstat = apply(matrix, qstat)
+            matrix_load = np.loadtxt(i, delimiter=',')
+            qstat = apply(matrix_load, qstat)
         record(i)
 
 #provides output
