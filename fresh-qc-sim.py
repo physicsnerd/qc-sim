@@ -4,11 +4,26 @@ import math
 import cmath #so eval can work w/ complex #s
 from datetime import datetime #for output file
 
-qnum = int(input("How many qubits: "))
+#file input vs. cli interface handling
+input_mode = input('file input or cli input? ')
+
+if input_mode == 'file':
+    file_contents = []
+    file_name = input('file name: ')
+    with open(file_name, 'r') as file:
+        for i in file:#make sure i is each new line
+            file_contents.append(i.strip('\n'))
+    file_commands = file_contents[3:]
+    qnum = file_contents[0]
+    simulation_type = file_contents[1]
+    z_or_o = file_contents[2]
+else:
+    qnum = int(input("How many qubits: "))
+    simulation_type = input("ideal or nonideal simulation: ")
+    z_or_o = input('would you like to start in the 0 or 1 state: ')
 
 zero_state = np.matrix([[1],[0]])
 one_state = np.matrix([[0],[1]])
-z_or_o = input('would you like to start in the 0 or 1 state: ')
 iterate = 1
 while iterate <= qnum:
     if iterate == 1:
@@ -30,7 +45,6 @@ done = 'n'
 
 things_done = []
 gates = {}
-simulation_type = input("ideal or nonideal simulation: ")
 
 def record(name):
     things_done.append(name)
@@ -74,9 +88,6 @@ def apply(matrix, qstat):
         return qstat
 
 def norm(qstat):
-    #print(qstat)
-    #qstat_version = np.squeeze(np.asarray(qstat))
-    #return math.sqrt(np.dot(qstat_version, qstat_version))
     return math.sqrt(sum(float(i)**2 for i in qstat))
 
 def normalize(qstat):
@@ -139,49 +150,63 @@ def measurement(qstat, qnum_meas="all"):
                 return zero_vector
             counter+=1
 
-#actual running
-if simulation_type == 'ideal':
-    while done == 'n':
-        next_item = input("custom gate or measurement or import or prev used: ")
-        if next_item == 'measurement':
-            measure_num = input('input all or which qubit num you would like measured: ')
-            qstat = measurement(qstat, measure_num)
-            record('measurement: '+measure_num)
-            print(qstat)
-        elif next_item == 'import':
-            file_read = input("input file name you would like to read: ")
-            try:
-                matrix_load = np.loadtxt(file_read, delimiter=',')
-                gates[file_read[:file_read.index('.')]] = matrix_load
-                print(gates)
+#actual running...add 'if' for file/cli input
+if input_mode == 'cli':
+    if simulation_type == 'ideal':
+        while done == 'n':
+            next_item = input("custom gate or measurement or import or prev used: ")
+            if next_item == 'measurement':
+                measure_num = input('input all or which qubit num you would like measured: ')
+                qstat = measurement(qstat, measure_num)
+                record('measurement: '+measure_num)
+                print(qstat)
+            elif next_item == 'import':
+                file_read = input("input file name you would like to read: ")
                 try:
-                    matrix = input("which gate from your file would you like to use: ")
-                    qstat = apply(gates[matrix], qstat)
+                    matrix_load = np.loadtxt(file_read, delimiter=',')
+                    gates[file_read[:file_read.index('.')]] = matrix_load
+                    print(gates)
+                    try:
+                        matrix = input("which gate from your file would you like to use: ")
+                        qstat = apply(gates[matrix], qstat)
+                        record(matrix)
+                    except KeyError:
+                        print('this gate does not seem to have been saved in the past. try custom gate')
+                    print(qstat)
+                except FileNotFoundError:
+                    print("file not found, check your spelling")
+            elif next_item == 'prev used':
+                print('list of gates: ',gates)
+                matrix = input("please input the matrix name: ")
+                try:
+                    qstat = apply(gates[matrix],qstat)
+                    print(qstat)
                     record(matrix)
                 except KeyError:
-                    print('this gate does not seem to have been saved in the past. try custom gate')
+                    print("this gate does not seem to have been saved in the past. try custom gate")
+            else:
+                dimension = int(input("Please give the size of your gate: "))
+                qstat = custom_gate(dimension)
                 print(qstat)
-            except FileNotFoundError:
-                print("file not found, check your spelling")
-        elif next_item == 'prev used':
-            print('list of gates: ',gates)
-            matrix = input("please input the matrix name: ")
-            try:
-                qstat = apply(gates[matrix],qstat)
-                print(qstat)
-                record(matrix)
-            except KeyError:
-                print("this gate does not seem to have been saved in the past. try custom gate")
-        else:
-            dimension = int(input("Please give the size of your gate: "))
-            qstat = custom_gate(dimension)
-            print(qstat)
-        done = input("Done with your qubits? y or n: ")
+            done = input("Done with your qubits? y or n: ")
 
 #consider having user import decoherence times they wish, but own noise function
 #nothing special has to be done for error correction?
+    else:
+        print('this is not done yet; sorry!')
 else:
-    print('this is not done yet; sorry!')
+    #file input run
+    for i in file_commands:
+        if 'measurement' in i:
+            if any(k.isdigit() for k in i):
+                num = i.strip('measurement\n ')
+                qstat = measurement(qstat, num)
+            else:
+                qstat = measurement(qstat, 'all')
+        else:
+            matrix_load = np.loadtext(i, delimiter=',')
+            qstat = apply(matrix, qstat)
+        record(i)
 
 #provides output
 print("end state: ", qstat)
