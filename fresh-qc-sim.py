@@ -3,6 +3,7 @@ import random
 import math
 import cmath #so eval can work w/ complex #s
 from datetime import datetime #for output file
+import os #for directory stuff
 
 #file input vs. cli interface handling
 input_mode = input('file input or cli input? ')
@@ -65,6 +66,7 @@ def custom_gate(dimension):
                 save_gate(matrix)
             else:
                 matrix_name = input("Please input matrix name: ")
+                gates[matrix_name] = matrix
                 record(matrix_name)
             return np.dot(matrix, qstat)
         except ValueError:
@@ -77,7 +79,7 @@ def custom_gate(dimension):
 def save_gate(matrix):
     matrix_name = input('please input a name for your matrix: ')
     record(matrix_name)
-    gates[matrix_name] = matrix
+    gates[matrix_name] = matrix#add folder stuff
     np.savetxt(matrix_name+'.txt', matrix, delimiter=',')
 
 def apply(matrix, qstat):
@@ -126,12 +128,14 @@ def measurement(qstat, qnum_meas="all"):
         if rand < zero_prob:
             #zero
             print(qnum_meas,' qubit measured as zero')
+            record(str(qnum_meas)+' qubit measured as zero')
             for i in basis_states:
                 if i[qnum_meas-1] == '0':
                     acceptable_stats.append(i)
         else:
             #one
             print(qnum_meas,' qubit measured as one')
+            record(str(qnum_meas)+' qubit measured as one')
             for i in basis_states:
                 if i[qnum_meas-1] == '1':
                     acceptable_stats.append(i)
@@ -162,7 +166,7 @@ if input_mode == 'cli':
                 print(qstat)
             elif next_item == 'import':
                 file_read = input("input file name you would like to read: ")
-                try:
+                try:#add folder stuff
                     matrix_load = np.loadtxt(file_read, delimiter=',')
                     gates[file_read[:file_read.index('.')]] = matrix_load
                     print(gates)
@@ -192,8 +196,10 @@ if input_mode == 'cli':
 
 #consider having user import decoherence times they wish, but own noise function
 #nothing special has to be done for error correction?
+#how do decohered qubits affect other decohered qubits?
     else:
-        print('this is not done yet; sorry!')
+        print('this is not done yet; sorry!')#maybe turn this into a flag instead
+        #of an else statement so it works w/ file run too
 else:
     #file input run
     for i in file_commands:
@@ -204,7 +210,7 @@ else:
             else:
                 qstat = measurement(qstat, 'all')
         else:
-            matrix_load = np.loadtxt(i, delimiter=',')
+            matrix_load = np.loadtxt(i, delimiter=',')#add folder stuff
             qstat = apply(matrix_load, qstat)
         record(i)
 
@@ -216,9 +222,9 @@ for i in basis_states:
     print('probability of |'+i+'> on measurement: ', probability(qstat, basis_states.index(i)))
     record('probability of |'+i+'> on measurement: '+str(probability(qstat, basis_states.index(i))))
 
-#create text file from record list [LOOK for missing parens...ew]
+#create text file from record list
 filename = str(datetime.now())+'-qc-sim-run.txt'
-with open(filename, 'w') as file:
+with open(filename, 'w') as file:#add folder stuff??
     file.write(str(datetime.now())+'\n')
     for i in things_done:
         file.write(i+'\n')
