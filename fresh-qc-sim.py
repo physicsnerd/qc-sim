@@ -5,7 +5,7 @@ import cmath #so eval can work w/ complex #s
 from datetime import datetime #for output file
 import os #for directory stuff
 
-#file input vs. cli interface handling
+#file input vs. cli interface handling -> edit so it can accomodate noise
 input_mode = input('file input or cli input? ')
 
 if input_mode == 'file':
