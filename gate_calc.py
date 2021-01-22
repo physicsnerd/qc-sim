@@ -1,30 +1,27 @@
 import numpy as np
 import math
 import cmath
+from functools import reduce
 
 qnum = int(input('number of qubits: '))
 
-def gate_scale(gate, ap_qubit):#this does not work
+def gate_scale(gate, ap_qubit):
+    matrix_list = []
     dimensions = int(math.sqrt(np.size(gate)))
-    ap_qubit-=1
-    if 2**qnum == dimensions:
-        return gate
+    identity_matrix = np.identity(dimensions, np.matrix)
+
+    #generate list
+    if ap_qubit == 'all':
+        for i in range(qnum):
+            matrix_list.append(gate)
     else:
-        iterator = 1
-        kron_num = []
-        identity = np.identity(dimensions, np.matrix)
-        while iterator <= qnum:#changed from <= dimensions to <= qnum
-            kron_num.append(identity)
-            iterator+=1
-        kron_num[ap_qubit] = gate
-        kron_iterator = list(range(len(kron_num)))
-        #has to be a better way to do this chunk of code
-        for i in kron_iterator:
-            if i == 0:
-                x = kron_num[i]
-            if i > 0:
-                x = np.kron(x, kron_num[i])
-        return x
+        ap_qubit = int(ap_qubit)
+        for i in range(qnum):
+            matrix_list.append(identity_matrix)
+        matrix_list[ap_qubit-1] = gate
+    
+    #iterate through list
+    return reduce(np.kron, matrix_list)
 
 def save_gate(matrix):
     matrix_name = input('please input a name for your matrix: ')
@@ -39,7 +36,7 @@ for y in range(dimension):
         element.strip("\"\'\\\/") #to sanitize input
         value_hold.append(eval(element))
 matrix = np.matrix(np.resize(value_hold, (dimension, dimension)))
-ap_qubit = int(input('qubit to apply to: '))
+ap_qubit = input('qubit to apply to: ')
 matrix = gate_scale(matrix, ap_qubit)
 print(matrix)
 save_gate(matrix)
